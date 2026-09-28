@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
 
-const NAV_ITEMS = [
+type NavItem = { label: string; to?: "/" };
+
+const NAV_ITEMS: NavItem[] = [
   { label: "Home", to: "/" },
   { label: "Tasks" },
   { label: "AI Assist" },
   { label: "Pricing" },
-] as const;
+];
 
 function Logo() {
   return (
