@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { HeaderAuth } from "./HeaderAuth";
 
 type NavItem = { label: string; to?: "/" };
 
@@ -51,22 +52,7 @@ export function AppHeader() {
           )}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            title="Coming soon"
-            className="hidden cursor-default text-sm text-muted-foreground transition-colors hover:text-foreground sm:block"
-          >
-            Sign in
-          </button>
-          <button
-            type="button"
-            title="Coming soon"
-            className="cursor-default rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition hover:opacity-90"
-          >
-            Get started
-          </button>
-        </div>
+        <HeaderAuth />
       </div>
     </header>
   );
