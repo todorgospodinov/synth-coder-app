@@ -24,7 +24,7 @@ Do not include a full corrected solution; give hints. Keep each item short.`;
 /** Asks Gemini (via Lovable AI Gateway) to review a solution. Signed-in users only. */
 export const checkSolution = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => Input.parse(d))
+  .validator((d: unknown) => Input.parse(d))
   .handler(async ({ data }): Promise<AiReview> => {
     const key = process.env["LOVABLE_API_KEY"];
     if (!key) throw new Error("AI is not configured.");
