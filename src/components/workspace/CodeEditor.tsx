@@ -30,7 +30,7 @@ export function CodeEditor({
   }
 
   return (
-    <div className="flex h-full min-h-[360px] overflow-hidden bg-code font-mono text-[13.5px] leading-6 text-code-foreground">
+    <div className="flex h-[420px] overflow-hidden bg-code font-mono text-[13.5px] leading-6 text-code-foreground">
       <div ref={gutter} aria-hidden className="select-none overflow-hidden border-r border-border px-3 py-3 text-right text-muted-foreground/60">
         {Array.from({ length: lineCount }, (_, i) => (
           <div key={i}>{i + 1}</div>
