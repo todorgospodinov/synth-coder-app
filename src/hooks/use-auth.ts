@@ -26,3 +26,8 @@ export function getFullName(user: User | null): string {
   const name = user?.user_metadata?.["full_name"];
   return typeof name === "string" ? name : "";
 }
+
+/** Admin flag lives in app_metadata (server-controlled; users can't edit it). */
+export function isAdmin(user: User | null): boolean {
+  return user?.app_metadata?.["is_admin"] === true;
+}
