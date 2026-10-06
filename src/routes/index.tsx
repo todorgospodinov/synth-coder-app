@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { FirstAdminSetup } from "@/components/admin/FirstAdminSetup";
 import { Workspace } from "@/components/workspace/Workspace";
 
 export const Route = createFileRoute("/")({
@@ -27,5 +28,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  return <Workspace />;
+  return (
+    <>
+      <FirstAdminSetup />
+      <Workspace />
+    </>
+  );
 }
