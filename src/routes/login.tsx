@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { isAdmin } from "@/hooks/use-auth";
 import { AuthCard, FormError } from "@/components/auth/AuthCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +32,10 @@ function LoginPage() {
     e.preventDefault();
     setError(null);
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) return setError(error.message);
-    navigate({ to: "/profile" });
+    navigate({ to: isAdmin(data.user) ? "/admin" : "/" });
   }
 
   return (

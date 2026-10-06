@@ -44,7 +44,7 @@ function RegisterPage() {
     });
     setBusy(false);
     if (error) return setError(error.message);
-    if (data.session) navigate({ to: "/profile" });
+    if (data.session) navigate({ to: "/" });
     else setSent(true);
   }
 

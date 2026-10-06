@@ -18,3 +18,4 @@
 - **Auth via Lovable Cloud email/password**; profile data (full_name) lives only in auth `user_metadata` — no profiles table, per user requirement. Protected pages go under `src/routes/_authenticated/` (gate redirects to `/login`).
 - **Python runs in the browser via Pyodide (WebAssembly, CDN-loaded in `src/lib/python-runner.ts`)** — the server runtime can't run a real Python process, and this keeps user code off the server.
 - **AI solution check = `checkSolution` server fn (signed-in only) calling Lovable AI Gateway with `google/gemini-3-flash-preview`** — user asked for Gemini; auth gate limits AI cost abuse.
+- **Admins = `app_metadata.is_admin === true`** (no roles table, per user requirement; app_metadata is only writable server-side). Admin pages live under `_authenticated/` with a `beforeLoad` isAdmin check.

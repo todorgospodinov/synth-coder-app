@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { getFullName, useAuth } from "@/hooks/use-auth";
+import { getFullName, isAdmin, useAuth } from "@/hooks/use-auth";
 
 /** Session-aware header actions: sign in / register, or profile + sign out. */
 export function HeaderAuth() {
@@ -33,6 +33,11 @@ export function HeaderAuth() {
 
   return (
     <div className="flex items-center gap-3">
+      {isAdmin(user) && (
+        <Link to="/admin" className="text-sm text-accent transition-colors hover:text-foreground">
+          Admin
+        </Link>
+      )}
       <Link to="/profile" className="hidden max-w-[16ch] truncate text-sm text-muted-foreground transition-colors hover:text-foreground sm:block">
         {getFullName(user) || user.email}
       </Link>
