@@ -19,3 +19,4 @@
 - **Python runs in the browser via Pyodide (WebAssembly, CDN-loaded in `src/lib/python-runner.ts`)** — the server runtime can't run a real Python process, and this keeps user code off the server.
 - **AI solution check = `checkSolution` server fn (signed-in only) calling Lovable AI Gateway with `google/gemini-3-flash-preview`** — user asked for Gemini; auth gate limits AI cost abuse.
 - **Admins = `app_metadata.is_admin === true`** (no roles table, per user requirement; app_metadata is only writable server-side). Admin pages live under `_authenticated/` with a `beforeLoad` isAdmin check.
+- **First-admin bootstrap = `createFirstAdmin` server fn (not an edge function — stack rule)**; refuses when any user has `app_metadata.is_admin`, so it's one-time by construction. Button hides via `getAdminSetupStatus`.
