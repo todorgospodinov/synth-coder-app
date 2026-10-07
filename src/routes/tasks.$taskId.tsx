@@ -38,7 +38,7 @@ export const Route = createFileRoute("/tasks/$taskId")({
     const router = useRouter();
     return (
       <main className="mx-auto flex flex-1 flex-col items-center justify-center py-24 text-center">
-        <p className="text-muted-foreground">{error.message}</p>
+        <p className="text-muted-foreground">{error instanceof Error ? error.message : "Something went wrong."}</p>
         <button className="mt-4 text-sm underline" onClick={() => { router.invalidate(); reset(); }}>Try again</button>
       </main>
     );

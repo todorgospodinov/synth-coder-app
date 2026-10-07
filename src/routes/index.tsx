@@ -3,7 +3,7 @@ import { FirstAdminSetup } from "@/components/admin/FirstAdminSetup";
 import { TaskBrowser } from "@/components/tasks/TaskBrowser";
 import { tasksQuery } from "@/lib/tasks.queries";
 
-type HomeSearch = { q?: string; all?: boolean };
+type HomeSearch = { q?: string | undefined; all?: boolean | undefined };
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): HomeSearch => ({
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
     const router = useRouter();
     return (
       <main className="mx-auto flex flex-1 flex-col items-center justify-center py-24 text-center">
-        <p className="text-muted-foreground">{error.message}</p>
+        <p className="text-muted-foreground">{error instanceof Error ? error.message : "Something went wrong."}</p>
         <button className="mt-4 text-sm underline" onClick={() => { router.invalidate(); reset(); }}>Try again</button>
       </main>
     );
