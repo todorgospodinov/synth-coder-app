@@ -14,12 +14,12 @@ const STARTER_TASK = "Read a number n from input and print the sum of all intege
 const STARTER_CODE = `n = int(input())\nprint(sum(range(1, n + 1)))\n`;
 
 /** Task + editor + console + AI review: the main write-and-check workspace. */
-export function Workspace() {
+export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CODE }: { initialTask?: string; initialCode?: string } = {}) {
   const { user } = useAuth();
   const check = useServerFn(checkSolution);
-  const [task, setTask] = useState(STARTER_TASK);
-  const [code, setCode] = useState(STARTER_CODE);
-  const [stdin, setStdin] = useState("10");
+  const [task, setTask] = useState(initialTask);
+  const [code, setCode] = useState(initialCode);
+  const [stdin, setStdin] = useState("");
   const [result, setResult] = useState<RunResult | null>(null);
   const [running, setRunning] = useState(false);
   const [review, setReview] = useState<AiReview | null>(null);
@@ -56,7 +56,7 @@ export function Workspace() {
   }
 
   return (
-    <main className="mx-auto w-[min(1280px,94%)] flex-1 py-10">
+    <section className="mx-auto w-[min(1280px,94%)] py-8">
       <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
         <aside className="space-y-5">
           <div className="rounded-2xl border border-border bg-card p-5 shadow-glass backdrop-blur-xl">
@@ -82,6 +82,6 @@ export function Workspace() {
           <OutputConsole result={result} running={running} stdin={stdin} onStdin={setStdin} />
         </section>
       </div>
-    </main>
+    </section>
   );
 }

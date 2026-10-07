@@ -5,7 +5,7 @@ type NavItem = { label: string; to?: "/" };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Home", to: "/" },
-  { label: "Tasks" },
+  { label: "Tasks", to: "/" },
   { label: "AI Assist" },
   { label: "Pricing" },
 ];
