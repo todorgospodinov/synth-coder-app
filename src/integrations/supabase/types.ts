@@ -16,29 +16,35 @@ export type Database = {
     Tables: {
       tasks: {
         Row: {
+          author_id: string | null
           code: string
           created_at: string
           id: string
           is_published: boolean
           statement: string
+          status: string
           title: string
           updated_at: string
         }
         Insert: {
+          author_id?: string | null
           code?: string
           created_at?: string
           id?: string
           is_published?: boolean
           statement: string
+          status?: string
           title: string
           updated_at?: string
         }
         Update: {
+          author_id?: string | null
           code?: string
           created_at?: string
           id?: string
           is_published?: boolean
           statement?: string
+          status?: string
           title?: string
           updated_at?: string
         }

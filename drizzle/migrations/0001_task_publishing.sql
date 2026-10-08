@@ -1,0 +1,13 @@
+ALTER TABLE public.tasks ADD COLUMN author_id uuid;
+ALTER TABLE public.tasks ADD COLUMN status text NOT NULL DEFAULT 'for_review';
+UPDATE public.tasks SET status = CASE WHEN is_published THEN 'published' ELSE 'for_review' END;
+ALTER TABLE public.tasks ADD CONSTRAINT tasks_status_check CHECK (status IN ('for_review','published','rejected'));
+ALTER TABLE public.tasks ALTER COLUMN is_published SET DEFAULT false;
+COMMENT ON COLUMN public.tasks.is_published IS 'DEPRECATED: replaced by status';
+CREATE INDEX tasks_author_idx ON public.tasks(author_id);
+GRANT SELECT, INSERT ON public.tasks TO authenticated;
+GRANT SELECT ON public.tasks TO anon;
+DROP POLICY "Anyone can read published tasks" ON public.tasks;
+CREATE POLICY "Anyone can read published tasks" ON public.tasks FOR SELECT TO anon, authenticated USING (status = 'published');
+CREATE POLICY "Authors read own tasks" ON public.tasks FOR SELECT TO authenticated USING (author_id = auth.uid());
+CREATE POLICY "Users submit tasks for review" ON public.tasks FOR INSERT TO authenticated WITH CHECK (author_id = auth.uid() AND status = 'for_review');
