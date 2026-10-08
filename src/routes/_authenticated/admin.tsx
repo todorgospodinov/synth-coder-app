@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { isAdmin } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -20,11 +20,14 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminDashboard,
 });
 
-/** Admin dashboard — intentionally empty for now. */
 function AdminDashboard() {
   return (
     <main className="mx-auto w-[min(1120px,92%)] flex-1 py-16">
       <h1 className="rise text-3xl font-semibold tracking-tight">Admin dashboard</h1>
+      <Link to="/admin/tasks" className="mt-8 block max-w-sm rounded-2xl border border-border bg-card p-5 shadow-glass backdrop-blur-xl transition hover:border-primary">
+        <div className="font-semibold">Manage tasks</div>
+        <p className="mt-1 text-sm text-muted-foreground">Review, publish and reject submitted tasks.</p>
+      </Link>
     </main>
   );
 }
