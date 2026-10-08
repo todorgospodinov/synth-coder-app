@@ -13,9 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as AuthenticatedAddTaskRouteImport } from './routes/_authenticated/add-task'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated/my-tasks'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as TasksTaskIdRouteImport } from './routes/tasks.$taskId'
+import { Route as AuthenticatedAdminTasksRouteImport } from './routes/_authenticated/admin_.tasks'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,9 +39,19 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAddTaskRoute = AuthenticatedAddTaskRouteImport.update({
+  id: '/add-task',
+  path: '/add-task',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMyTasksRoute = AuthenticatedMyTasksRouteImport.update({
+  id: '/my-tasks',
+  path: '/my-tasks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -51,22 +64,33 @@ const TasksTaskIdRoute = TasksTaskIdRouteImport.update({
   path: '/tasks/$taskId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminTasksRoute = AuthenticatedAdminTasksRouteImport.update({
+  id: '/admin_/tasks',
+  path: '/admin/tasks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
+  '/admin/tasks': typeof AuthenticatedAdminTasksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
+  '/admin/tasks': typeof AuthenticatedAdminTasksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -74,25 +98,48 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_authenticated/add-task': typeof AuthenticatedAddTaskRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/my-tasks': typeof AuthenticatedMyTasksRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
+  '/_authenticated/admin_/tasks': typeof AuthenticatedAdminTasksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/login' | '/register' | '/admin' | '/profile' | '/tasks/$taskId'
+    | '/'
+    | '/login'
+    | '/register'
+    | '/add-task'
+    | '/admin'
+    | '/my-tasks'
+    | '/profile'
+    | '/tasks/$taskId'
+    | '/admin/tasks'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/admin' | '/profile' | '/tasks/$taskId'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/add-task'
+    | '/admin'
+    | '/my-tasks'
+    | '/profile'
+    | '/tasks/$taskId'
+    | '/admin/tasks'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
     | '/register'
+    | '/_authenticated/add-task'
     | '/_authenticated/admin'
+    | '/_authenticated/my-tasks'
     | '/_authenticated/profile'
     | '/tasks/$taskId'
+    | '/_authenticated/admin_/tasks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -133,11 +180,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/add-task': {
+      id: '/_authenticated/add-task'
+      path: '/add-task'
+      fullPath: '/add-task'
+      preLoaderRoute: typeof AuthenticatedAddTaskRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/my-tasks': {
+      id: '/_authenticated/my-tasks'
+      path: '/my-tasks'
+      fullPath: '/my-tasks'
+      preLoaderRoute: typeof AuthenticatedMyTasksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -154,17 +215,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TasksTaskIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin_/tasks': {
+      id: '/_authenticated/admin_/tasks'
+      path: '/admin/tasks'
+      fullPath: '/admin/tasks'
+      preLoaderRoute: typeof AuthenticatedAdminTasksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAddTaskRoute: typeof AuthenticatedAddTaskRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedMyTasksRoute: typeof AuthenticatedMyTasksRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedAdminTasksRoute: typeof AuthenticatedAdminTasksRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAddTaskRoute: AuthenticatedAddTaskRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedMyTasksRoute: AuthenticatedMyTasksRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedAdminTasksRoute: AuthenticatedAdminTasksRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

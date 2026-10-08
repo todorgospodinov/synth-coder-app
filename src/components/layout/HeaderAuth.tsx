@@ -33,6 +33,12 @@ export function HeaderAuth() {
 
   return (
     <div className="flex items-center gap-3">
+      <Link to="/add-task" className="text-sm text-muted-foreground transition-colors hover:text-foreground" activeProps={{ className: "text-foreground" }}>
+        Add Task
+      </Link>
+      <Link to="/my-tasks" className="text-sm text-muted-foreground transition-colors hover:text-foreground" activeProps={{ className: "text-foreground" }}>
+        My Tasks
+      </Link>
       {isAdmin(user) && (
         <Link to="/admin" className="text-sm text-accent transition-colors hover:text-foreground">
           Admin
