@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listMyTasks } from "@/lib/task-publishing.functions";
 import { TaskStatusBadge } from "@/components/tasks/TaskStatusBadge";
+import { DeleteTaskButton } from "@/components/tasks/DeleteTaskButton";
 
 export const Route = createFileRoute("/_authenticated/my-tasks")({
   head: () => ({
@@ -42,7 +43,13 @@ function MyTasks() {
               <TaskStatusBadge status={t.status} />
             </div>
             <p className="mt-2 line-clamp-2 whitespace-pre-line text-sm text-muted-foreground">{t.statement}</p>
-            <div className="mt-3 font-mono text-xs text-muted-foreground">{new Date(t.created_at).toLocaleString()}</div>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span className="font-mono text-xs text-muted-foreground">{new Date(t.created_at).toLocaleString()}</span>
+              <div className="flex gap-2">
+                <Link to="/edit-task/$taskId" params={{ taskId: t.id }} className="rounded-lg border border-border px-3 py-1.5 text-xs hover:border-primary hover:text-primary">Edit</Link>
+                <DeleteTaskButton id={t.id} title={t.title} />
+              </div>
+            </div>
           </div>
         ))}
       </div>

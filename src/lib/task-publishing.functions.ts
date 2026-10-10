@@ -72,3 +72,42 @@ export const adminSetTaskStatus = createServerFn({ method: "POST" })
     if (error) throw new Error("Could not update the task.");
     return { ok: true };
   });
+
+const taskInput = z.object({
+  title: z.string().trim().min(3).max(150),
+  statement: z.string().trim().min(10).max(8000),
+  code: z.string().max(20000),
+});
+
+/** One of the caller's own tasks (any state), for editing. Admins may load any task. */
+export const getMyTask = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from("tasks").select("id, title, statement, code, status, author_id").eq("id", data.id).maybeSingle();
+    if (error) throw new Error("Could not load the task.");
+    if (!row) throw new Error("Task not found.");
+    return row;
+  });
+
+/** Edit a task. A DB trigger sends it back to "for_review" unless the caller is an admin. */
+export const updateMyTask = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => taskInput.extend({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { id, ...fields } = data;
+    const { data: rows, error } = await context.supabase.from("tasks").update(fields).eq("id", id).select("id");
+    if (error || !rows?.length) throw new Error("Could not save the task.");
+    return { ok: true };
+  });
+
+/** Delete own task (admins: any task) — enforced by RLS. */
+export const deleteMyTask = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await context.supabase.from("tasks").delete().eq("id", data.id).select("id");
+    if (error || !rows?.length) throw new Error("Could not delete the task.");
+    return { ok: true };
+  });
