@@ -3,18 +3,21 @@ import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { submitTask } from "@/lib/task-publishing.functions";
+import { submitTask, updateMyTask } from "@/lib/task-publishing.functions";
 
 const field = "w-full rounded-lg border border-border bg-background/40 px-3 py-2 text-sm outline-none focus:border-primary";
 
-/** Form for submitting a new task for admin review. */
-export function AddTaskForm() {
+type Initial = { id: string; title: string; statement: string; code: string };
+
+/** Form for submitting a new task, or editing an existing one when `initial` is given. */
+export function AddTaskForm({ initial }: { initial?: Initial }) {
   const submit = useServerFn(submitTask);
+  const update = useServerFn(updateMyTask);
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [title, setTitle] = useState("");
-  const [statement, setStatement] = useState("");
-  const [code, setCode] = useState("");
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [statement, setStatement] = useState(initial?.statement ?? "");
+  const [code, setCode] = useState(initial?.code ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,12 +28,13 @@ export function AddTaskForm() {
     if (statement.trim().length < 10) return setError("Problem statement must be at least 10 characters.");
     setBusy(true);
     try {
-      await submit({ data: { title, statement, code } });
-      await qc.invalidateQueries({ queryKey: ["my-tasks"] });
-      toast.success("Task submitted for review");
+      if (initial) await update({ data: { id: initial.id, title, statement, code } });
+      else await submit({ data: { title, statement, code } });
+      await qc.invalidateQueries();
+      toast.success(initial ? "Task saved" : "Task submitted for review");
       navigate({ to: "/my-tasks" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not submit the task.");
+      setError(err instanceof Error ? err.message : "Could not save the task.");
     } finally {
       setBusy(false);
     }
@@ -52,7 +56,7 @@ export function AddTaskForm() {
       </label>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <button disabled={busy} className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50">
-        {busy ? "Submitting…" : "Submit for review"}
+        {busy ? "Saving…" : initial ? "Save changes" : "Submit for review"}
       </button>
     </form>
   );
