@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { isAdmin } from "@/hooks/use-auth";
 import { adminListTasks, adminSetTaskStatus, type TaskStatus } from "@/lib/task-publishing.functions";
 import { TaskStatusBadge } from "@/components/tasks/TaskStatusBadge";
+import { DeleteTaskButton } from "@/components/tasks/DeleteTaskButton";
 
 export const Route = createFileRoute("/_authenticated/admin_/tasks")({
   beforeLoad: ({ context }) => {
@@ -68,8 +69,11 @@ function AdminTasks() {
                       <TaskStatusBadge status={t.status} />
                     </div>
                     <div className="flex gap-2">
+                      <Link to="/tasks/$taskId" params={{ taskId: t.id }} className={btn}>View</Link>
+                      <Link to="/edit-task/$taskId" params={{ taskId: t.id }} className={btn}>Edit</Link>
                       {t.status !== "published" && <button className={`${btn} text-primary`} onClick={() => change(t.id, "published")}>Publish</button>}
                       {t.status !== "rejected" && <button className={`${btn} text-destructive`} onClick={() => change(t.id, "rejected")}>Reject</button>}
+                      <DeleteTaskButton id={t.id} title={t.title} />
                     </div>
                   </div>
                   <p className="mt-2 line-clamp-3 whitespace-pre-line text-sm text-muted-foreground">{t.statement}</p>
