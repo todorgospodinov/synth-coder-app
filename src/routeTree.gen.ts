@@ -19,6 +19,7 @@ import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as TasksTaskIdRouteImport } from './routes/tasks.$taskId'
 import { Route as AuthenticatedAdminTasksRouteImport } from './routes/_authenticated/admin_.tasks'
+import { Route as AuthenticatedEditTaskTaskIdRouteImport } from './routes/_authenticated/edit-task.$taskId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -69,6 +70,12 @@ const AuthenticatedAdminTasksRoute = AuthenticatedAdminTasksRouteImport.update({
   path: '/admin/tasks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEditTaskTaskIdRoute =
+  AuthenticatedEditTaskTaskIdRouteImport.update({
+    id: '/edit-task/$taskId',
+    path: '/edit-task/$taskId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/admin/tasks': typeof AuthenticatedAdminTasksRoute
+  '/edit-task/$taskId': typeof AuthenticatedEditTaskTaskIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,6 +99,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/admin/tasks': typeof AuthenticatedAdminTasksRoute
+  '/edit-task/$taskId': typeof AuthenticatedEditTaskTaskIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,6 +113,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
   '/_authenticated/admin_/tasks': typeof AuthenticatedAdminTasksRoute
+  '/_authenticated/edit-task/$taskId': typeof AuthenticatedEditTaskTaskIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tasks/$taskId'
     | '/admin/tasks'
+    | '/edit-task/$taskId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tasks/$taskId'
     | '/admin/tasks'
+    | '/edit-task/$taskId'
   id:
     | '__root__'
     | '/'
@@ -140,6 +152,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/tasks/$taskId'
     | '/_authenticated/admin_/tasks'
+    | '/_authenticated/edit-task/$taskId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -222,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTasksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/edit-task/$taskId': {
+      id: '/_authenticated/edit-task/$taskId'
+      path: '/edit-task/$taskId'
+      fullPath: '/edit-task/$taskId'
+      preLoaderRoute: typeof AuthenticatedEditTaskTaskIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -231,6 +251,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMyTasksRoute: typeof AuthenticatedMyTasksRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedAdminTasksRoute: typeof AuthenticatedAdminTasksRoute
+  AuthenticatedEditTaskTaskIdRoute: typeof AuthenticatedEditTaskTaskIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -239,6 +260,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMyTasksRoute: AuthenticatedMyTasksRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedAdminTasksRoute: AuthenticatedAdminTasksRoute,
+  AuthenticatedEditTaskTaskIdRoute: AuthenticatedEditTaskTaskIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
