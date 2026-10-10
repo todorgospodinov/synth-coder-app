@@ -47,9 +47,10 @@ export const adminListTasks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<(OwnedTask & { author_email: string | null })[]> => {
     assertAdmin(context.claims);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin.from("tasks").select(COLS).order("created_at", { ascending: false });
+    // RLS "Admins read all tasks" (JWT app_metadata.is_admin) lets the admin's own session see every row.
+    const { data, error } = await context.supabase.from("tasks").select(COLS).order("created_at", { ascending: false });
     if (error) throw new Error("Could not load tasks.");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: users } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 });
     const emails = new Map((users?.users ?? []).map((u) => [u.id, u.email ?? null]));
     return (data as OwnedTask[]).map((t) => ({ ...t, author_email: t.author_id ? emails.get(t.author_id) ?? null : null }));
@@ -63,8 +64,8 @@ export const adminSetTaskStatus = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     assertAdmin(context.claims);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    // RLS "Admins update task status" permits this for admins using their own session.
+    const { error } = await context.supabase
       .from("tasks")
       .update({ status: data.status, is_published: data.status === "published", updated_at: new Date().toISOString() })
       .eq("id", data.id);
