@@ -39,6 +39,7 @@ export function CodeEditor({
       <textarea
         ref={ref}
         aria-label="Python code"
+        placeholder="Write your Python code here…"
         spellCheck={false}
         value={value}
         onChange={(e) => onChange(e.target.value)}
