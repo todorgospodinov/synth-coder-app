@@ -12,11 +12,13 @@ export function AiReviewPanel({
   loading,
   error,
   signedIn,
+  hasCode,
 }: {
   review: AiReview | null;
   loading: boolean;
   error: string | null;
   signedIn: boolean;
+  hasCode: boolean;
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-glass backdrop-blur-xl">
@@ -29,7 +31,11 @@ export function AiReviewPanel({
       {signedIn && loading && <p className="mt-2 text-sm text-muted-foreground">Gemini is reviewing your code…</p>}
       {signedIn && error && <p className="mt-2 text-sm text-destructive">{error}</p>}
       {signedIn && !loading && !error && !review && (
-        <p className="mt-2 text-sm text-muted-foreground">Write the task and your solution, then press "Check with AI".</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {hasCode
+            ? 'Write the task and your solution, then press "Check with AI".'
+            : "Write your solution in the editor first, then press “Check with AI”."}
+        </p>
       )}
       {review && !loading && (
         <div className="mt-3 space-y-3 text-sm">
