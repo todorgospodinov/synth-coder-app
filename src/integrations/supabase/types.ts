@@ -21,6 +21,7 @@ export type Database = {
           created_at: string
           id: string
           is_published: boolean
+          language: string
           statement: string
           status: string
           title: string
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_published?: boolean
+          language?: string
           statement: string
           status?: string
           title: string
@@ -43,6 +45,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_published?: boolean
+          language?: string
           statement?: string
           status?: string
           title?: string
