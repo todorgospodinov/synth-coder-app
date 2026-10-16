@@ -14,7 +14,7 @@ export function TaskDetails({ task }: { task: Task }) {
         <h1 className="rise mt-4 text-3xl font-semibold tracking-tight">{task.title}</h1>
         <p className="mt-4 max-w-3xl whitespace-pre-line leading-relaxed text-muted-foreground">{task.statement}</p>
       </section>
-      <Workspace key={task.id} initialTask={task.statement} initialCode={task.code} />
+      <Workspace key={task.id} initialTask={task.statement} initialCode={task.code} language={task.language === "java" ? "java" : "python"} />
     </>
   );
 }

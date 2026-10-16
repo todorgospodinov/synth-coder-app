@@ -3,9 +3,9 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type TaskStatus = "for_review" | "published" | "rejected";
-export type OwnedTask = { id: string; title: string; statement: string; status: TaskStatus; created_at: string; author_id: string | null };
+export type OwnedTask = { id: string; title: string; statement: string; status: TaskStatus; created_at: string; author_id: string | null; language: string };
 
-const COLS = "id, title, statement, status, created_at, author_id";
+const COLS = "id, title, statement, status, created_at, author_id, language";
 
 /** Signed-in user submits a task; always lands in "for_review", owned by the caller. */
 export const submitTask = createServerFn({ method: "POST" })
@@ -15,6 +15,7 @@ export const submitTask = createServerFn({ method: "POST" })
       title: z.string().trim().min(3).max(150),
       statement: z.string().trim().min(10).max(8000),
       code: z.string().max(20000),
+  language: z.enum(["python", "java"]).default("python"),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -77,6 +78,7 @@ const taskInput = z.object({
   title: z.string().trim().min(3).max(150),
   statement: z.string().trim().min(10).max(8000),
   code: z.string().max(20000),
+  language: z.enum(["python", "java"]).default("python"),
 });
 
 /** One of the caller's own tasks (any state), for editing. Admins may load any task. */
@@ -85,7 +87,7 @@ export const getMyTask = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
-      .from("tasks").select("id, title, statement, code, status, author_id").eq("id", data.id).maybeSingle();
+      .from("tasks").select("id, title, statement, code, status, author_id, language").eq("id", data.id).maybeSingle();
     if (error) throw new Error("Could not load the task.");
     if (!row) throw new Error("Task not found.");
     return row;

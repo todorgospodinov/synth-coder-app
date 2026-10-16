@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { HeaderAuth } from "./HeaderAuth";
 
-type NavItem = { label: string; to?: "/" };
+type NavItem = { label: string; to?: "/" | "/python" | "/java" };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Home", to: "/" },
-  { label: "Tasks", to: "/" },
+  { label: "Python", to: "/python" },
+  { label: "Java", to: "/java" },
   { label: "AI Assist" },
   { label: "Pricing" },
 ];
@@ -35,6 +36,7 @@ export function AppHeader() {
               <Link
                 key={item.label}
                 to={item.to}
+                activeOptions={{ exact: true, includeSearch: false }}
                 className="transition-colors hover:text-foreground"
                 activeProps={{ className: "text-foreground" }}
               >
