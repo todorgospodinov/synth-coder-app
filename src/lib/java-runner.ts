@@ -1,0 +1,114 @@
+/**
+ * Browser-side Java: CheerpJ (a JVM in WebAssembly) runs the real javac from tools.jar,
+ * then a small runner class executes the compiled program with stdin/stdout redirected to files.
+ */
+import toolsJar from "@/assets/tools.jar.asset.json";
+import type { RunResult } from "./python-runner";
+
+const LOADER = "https://cjrtnc.leaningtech.com/4.3/loader.js";
+const CP = "/str/tools.jar:/files/ctr/";
+
+declare global {
+  interface Window {
+    cheerpjInit?: (o?: object) => Promise<void>;
+    cheerpjRunMain?: (cls: string, cp: string, ...args: string[]) => Promise<number>;
+    cheerpjAddStringFile?: (path: string, data: string | Uint8Array) => void;
+    cjFileBlob?: (path: string) => Promise<Blob>;
+  }
+}
+
+const RUNNER = `import java.io.*; import java.net.*; import java.lang.reflect.*;
+public class CTRunner {
+  public static void main(String[] a) throws Exception {
+    String dir = a[0];
+    PrintStream out = new PrintStream(new FileOutputStream(dir + "out.txt"), true, "UTF-8");
+    PrintStream err = new PrintStream(new FileOutputStream(dir + "err.txt"), true, "UTF-8");
+    PrintStream oo = System.out, oe = System.err; InputStream oi = System.in;
+    System.setOut(out); System.setErr(err); System.setIn(new FileInputStream(a[2]));
+    try {
+      URLClassLoader cl = new URLClassLoader(new URL[]{ new File(dir).toURI().toURL() }, CTRunner.class.getClassLoader().getParent());
+      Method m = cl.loadClass(a[1]).getMethod("main", String[].class);
+      m.invoke(null, (Object) new String[0]);
+    } catch (InvocationTargetException e) { e.getCause().printStackTrace(); }
+    catch (Throwable t) { t.printStackTrace(); }
+    finally { out.flush(); err.flush(); out.close(); err.close(); System.setOut(oo); System.setErr(oe); System.setIn(oi); }
+  }
+}`;
+
+let ready: Promise<void> | null = null;
+let runId = 0;
+
+function loadScript(src: string) {
+  return new Promise<void>((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Could not load the Java runtime."));
+    document.head.appendChild(s);
+  });
+}
+
+function consoleEl(): HTMLElement {
+  let el = document.getElementById("console");
+  if (!el) {
+    el = document.createElement("pre");
+    el.id = "console";
+    el.style.display = "none";
+    document.body.appendChild(el);
+  }
+  return el;
+}
+
+async function readFile(path: string): Promise<string> {
+  try {
+    return await (await window.cjFileBlob!(path)).text();
+  } catch {
+    return "";
+  }
+}
+
+function getJava(): Promise<void> {
+  if (!ready) {
+    ready = (async () => {
+      consoleEl();
+      if (!window.cheerpjInit) await loadScript(LOADER);
+      await window.cheerpjInit!({ status: "none" });
+      const jar = new Uint8Array(await (await fetch(toolsJar.url)).arrayBuffer());
+      window.cheerpjAddStringFile!("/str/tools.jar", jar);
+      window.cheerpjAddStringFile!("/str/CTRunner.java", RUNNER);
+      const code = await window.cheerpjRunMain!("com.sun.tools.javac.Main", CP, "/str/CTRunner.java", "-d", "/files/ctr/");
+      if (code !== 0) throw new Error("Could not prepare the Java compiler.");
+    })().catch((e) => {
+      ready = null;
+      throw e;
+    });
+  }
+  return ready;
+}
+
+/** Compiles and runs Java source; the public class (usually Main) is the entry point. */
+export async function runJava(code: string, stdin: string): Promise<RunResult> {
+  await getJava();
+  const start = performance.now();
+  const id = ++runId + "_" + Date.now();
+  const cls = code.match(/public\s+(?:final\s+)?class\s+(\w+)/)?.[1] ?? "Main";
+  const src = `/str/r${id}/${cls}.java`;
+  const dir = `/files/r${id}/`;
+  window.cheerpjAddStringFile!(src, code);
+  window.cheerpjAddStringFile!(`/str/in${id}.txt`, stdin);
+  const con = consoleEl();
+  con.textContent = "";
+  const compiled = await window.cheerpjRunMain!("com.sun.tools.javac.Main", CP, src, "-d", dir);
+  if (compiled !== 0) {
+    const msg = (con.textContent ?? "").split(`/str/r${id}/`).join("");
+    return { stdout: "", stderr: msg || "Compilation failed.", ok: false, ms: Math.round(performance.now() - start) };
+  }
+  await window.cheerpjRunMain!("CTRunner", CP, dir, cls, `/str/in${id}.txt`);
+  const stdout = await readFile(dir + "out.txt");
+  const stderr = (await readFile(dir + "err.txt"))
+    .split("\n")
+    .filter((l) => !/CTRunner|sun\.reflect|java\.lang\.reflect/.test(l))
+    .join("\n")
+    .trim();
+  return { stdout, stderr, ok: !stderr, ms: Math.round(performance.now() - start) };
+}
