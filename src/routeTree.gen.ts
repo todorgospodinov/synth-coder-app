@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as JavaRouteImport } from './routes/java'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PythonRouteImport } from './routes/python'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AuthenticatedAddTaskRouteImport } from './routes/_authenticated/add-task'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -30,9 +32,19 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JavaRoute = JavaRouteImport.update({
+  id: '/java',
+  path: '/java',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PythonRoute = PythonRouteImport.update({
+  id: '/python',
+  path: '/python',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -79,7 +91,9 @@ const AuthenticatedEditTaskTaskIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/java': typeof JavaRoute
   '/login': typeof LoginRoute
+  '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
   '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -91,7 +105,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/java': typeof JavaRoute
   '/login': typeof LoginRoute
+  '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
   '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -105,7 +121,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/java': typeof JavaRoute
   '/login': typeof LoginRoute
+  '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
   '/_authenticated/add-task': typeof AuthenticatedAddTaskRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -119,7 +137,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/java'
     | '/login'
+    | '/python'
     | '/register'
     | '/add-task'
     | '/admin'
@@ -131,7 +151,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/java'
     | '/login'
+    | '/python'
     | '/register'
     | '/add-task'
     | '/admin'
@@ -144,7 +166,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/java'
     | '/login'
+    | '/python'
     | '/register'
     | '/_authenticated/add-task'
     | '/_authenticated/admin'
@@ -158,7 +182,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  JavaRoute: typeof JavaRoute
   LoginRoute: typeof LoginRoute
+  PythonRoute: typeof PythonRoute
   RegisterRoute: typeof RegisterRoute
   TasksTaskIdRoute: typeof TasksTaskIdRoute
 }
@@ -179,11 +205,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/java': {
+      id: '/java'
+      path: '/java'
+      fullPath: '/java'
+      preLoaderRoute: typeof JavaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/python': {
+      id: '/python'
+      path: '/python'
+      fullPath: '/python'
+      preLoaderRoute: typeof PythonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -269,7 +309,9 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  JavaRoute: JavaRoute,
   LoginRoute: LoginRoute,
+  PythonRoute: PythonRoute,
   RegisterRoute: RegisterRoute,
   TasksTaskIdRoute: TasksTaskIdRoute,
 }

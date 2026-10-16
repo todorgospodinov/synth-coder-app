@@ -7,7 +7,7 @@ import { submitTask, updateMyTask } from "@/lib/task-publishing.functions";
 
 const field = "w-full rounded-lg border border-border bg-background/40 px-3 py-2 text-sm outline-none focus:border-primary";
 
-type Initial = { id: string; title: string; statement: string; code: string };
+type Initial = { id: string; title: string; statement: string; code: string; language?: string };
 
 /** Form for submitting a new task, or editing an existing one when `initial` is given. */
 export function AddTaskForm({ initial }: { initial?: Initial }) {
@@ -18,6 +18,7 @@ export function AddTaskForm({ initial }: { initial?: Initial }) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [statement, setStatement] = useState(initial?.statement ?? "");
   const [code, setCode] = useState(initial?.code ?? "");
+  const [language, setLanguage] = useState<"python" | "java">(initial?.language === "java" ? "java" : "python");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,8 +29,8 @@ export function AddTaskForm({ initial }: { initial?: Initial }) {
     if (statement.trim().length < 10) return setError("Problem statement must be at least 10 characters.");
     setBusy(true);
     try {
-      if (initial) await update({ data: { id: initial.id, title, statement, code } });
-      else await submit({ data: { title, statement, code } });
+      if (initial) await update({ data: { id: initial.id, title, statement, code, language } });
+      else await submit({ data: { title, statement, code, language } });
       await qc.invalidateQueries();
       toast.success(initial ? "Task saved" : "Task submitted for review");
       navigate({ to: "/my-tasks" });
@@ -42,6 +43,13 @@ export function AddTaskForm({ initial }: { initial?: Initial }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-glass backdrop-blur-xl">
+      <label className="block space-y-1.5">
+        <span className="text-sm text-muted-foreground">Language</span>
+        <select className={field} value={language} onChange={(e) => setLanguage(e.target.value === "java" ? "java" : "python")}>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+        </select>
+      </label>
       <label className="block space-y-1.5">
         <span className="text-sm text-muted-foreground">Title</span>
         <input className={field} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={150} />

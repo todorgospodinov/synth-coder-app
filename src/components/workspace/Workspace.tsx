@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
 import { runPython, type RunResult } from "@/lib/python-runner";
+import { LANGUAGES, type Language } from "@/lib/languages";
 import { checkSolution, type AiReview } from "@/lib/ai-check.functions";
 import { CodeEditor } from "./CodeEditor";
 import { OutputConsole } from "./OutputConsole";
@@ -21,7 +22,7 @@ function describeAIError(e: unknown): string {
 }
 
 /** Task + editor + console + AI review: the main write-and-check workspace. */
-export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CODE }: { initialTask?: string; initialCode?: string } = {}) {
+export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CODE, language = "python" }: { initialTask?: string; initialCode?: string; language?: Language } = {}) {
   const { user } = useAuth();
   const check = useServerFn(checkSolution);
   const [task, setTask] = useState(initialTask);
@@ -37,7 +38,7 @@ export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CO
   async function run(): Promise<RunResult | null> {
     setRunning(true);
     try {
-      const r = await runPython(code, stdin);
+      const r = language === "java" ? await (await import("@/lib/java-runner")).runJava(code, stdin) : await runPython(code, stdin);
       setResult(r);
       return r;
     } catch (e) {
@@ -56,7 +57,7 @@ export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CO
     try {
       const r = result ?? (await run());
       const output = r ? r.stdout + (r.stderr ? "\n[stderr]\n" + r.stderr : "") : "";
-      setReview(await check({ data: { task, code, stdin, output: output.slice(0, 8000) } }));
+      setReview(await check({ data: { language, task, code, stdin, output: output.slice(0, 8000) } }));
     } catch (e) {
       setReviewError(describeAIError(e));
     } finally {
@@ -77,17 +78,17 @@ export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CO
 
         <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-glass">
           <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
-            <span className="font-mono text-xs text-muted-foreground">main.py · Python 3</span>
+            <span className="font-mono text-xs text-muted-foreground">{LANGUAGES[language].file}</span>
             <div className="flex gap-2">
               <Button size="sm" onClick={run} disabled={running}>
-                <Play className="size-4" /> {running ? "Running…" : "Run"}
+                <Play className="size-4" /> {running ? (language === "java" ? "Compiling…" : "Running…") : "Run"}
               </Button>
               <Button size="sm" variant="secondary" onClick={aiCheck} disabled={!user || !hasCode || reviewing || running} title={hasCode ? undefined : "Write your solution first"}>
                 <Sparkles className="size-4" /> Check with AI
               </Button>
             </div>
           </div>
-          <CodeEditor value={code} onChange={(v) => { setCode(v); setResult(null); }} onRun={run} />
+          <CodeEditor language={language} value={code} onChange={(v) => { setCode(v); setResult(null); }} onRun={run} />
           <OutputConsole result={result} running={running} stdin={stdin} onStdin={setStdin} />
         </section>
       </div>
