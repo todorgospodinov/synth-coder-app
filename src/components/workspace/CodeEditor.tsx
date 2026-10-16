@@ -5,7 +5,9 @@ export function CodeEditor({
   value,
   onChange,
   onRun,
+  language = "python",
 }: {
+  language?: "python" | "java";
   value: string;
   onChange: (v: string) => void;
   onRun: () => void;
@@ -38,8 +40,8 @@ export function CodeEditor({
       </div>
       <textarea
         ref={ref}
-        aria-label="Python code"
-        placeholder="Write your Python code here…"
+        aria-label={`${language === "java" ? "Java" : "Python"} code`}
+        placeholder={`Write your ${language === "java" ? "Java" : "Python"} code here…`}
         spellCheck={false}
         value={value}
         onChange={(e) => onChange(e.target.value)}

@@ -33,7 +33,7 @@ export function OutputConsole({
         <textarea
           value={stdin}
           onChange={(e) => onStdin(e.target.value)}
-          placeholder="One line per input() call"
+          placeholder="Input lines read by your program"
           spellCheck={false}
           className="flex-1 resize-none rounded-md border border-input bg-transparent p-2 font-mono text-[13px] text-code-foreground outline-none focus:border-ring"
         />

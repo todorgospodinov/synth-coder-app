@@ -9,9 +9,9 @@ export const Route = createFileRoute("/_authenticated/edit-task/$taskId")({
   head: () => ({
     meta: [
       { title: "Edit Task — CodeTrainer" },
-      { name: "description", content: "Edit your Python task." },
+      { name: "description", content: "Edit your programming task." },
       { property: "og:title", content: "Edit Task — CodeTrainer" },
-      { property: "og:description", content: "Edit your Python task." },
+      { property: "og:description", content: "Edit your programming task." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -33,7 +33,7 @@ function EditTask() {
       </p>
       {isLoading && <p className="text-muted-foreground">Loading…</p>}
       {error && <p className="text-destructive">{error.message}</p>}
-      {data && <AddTaskForm initial={{ id: data.id, title: data.title, statement: data.statement, code: data.code }} />}
+      {data && <AddTaskForm initial={{ id: data.id, title: data.title, statement: data.statement, code: data.code, language: data.language }} />}
     </main>
   );
 }

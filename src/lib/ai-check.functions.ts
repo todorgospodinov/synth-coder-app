@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const Input = z.object({
+  language: z.enum(["python", "java"]).default("python"),
   task: z.string().max(8000),
   code: z.string().min(1).max(20000),
   stdin: z.string().max(4000),
@@ -17,7 +18,7 @@ export type AiReview = {
   suggestions: string[];
 };
 
-const SYSTEM = `You are a strict but friendly Python teacher. Evaluate whether the student's code solves the task.
+const SYSTEM = (lang: string) => `You are a strict but friendly ${lang} programming teacher. Evaluate whether the student's code solves the task.
 Reply ONLY with JSON: {"verdict":"correct"|"partially_correct"|"incorrect","score":0-100,"summary":string,"issues":string[],"suggestions":string[]}.
 Do not include a full corrected solution; give hints. Keep each item short.`;
 
@@ -28,7 +29,7 @@ export const checkSolution = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<AiReview> => {
     const key = process.env["LOVABLE_API_KEY"];
     if (!key) throw new Error("AI is not configured.");
-    const user = `TASK:\n${data.task || "(no task text — infer intent from code)"}\n\nCODE:\n\`\`\`python\n${data.code}\n\`\`\`\n\nSTDIN:\n${data.stdin || "(empty)"}\n\nPROGRAM OUTPUT:\n${data.output || "(not run)"}`;
+    const user = `TASK:\n${data.task || "(no task text — infer intent from code)"}\n\nCODE:\n\`\`\`${data.language}\n${data.code}\n\`\`\`\n\nSTDIN:\n${data.stdin || "(empty)"}\n\nPROGRAM OUTPUT:\n${data.output || "(not run)"}`;
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -42,7 +43,7 @@ export const checkSolution = createServerFn({ method: "POST" })
         stream: true,
         response_format: { type: "json_object" },
         messages: [
-          { role: "system", content: SYSTEM },
+          { role: "system", content: SYSTEM(data.language === "java" ? "Java" : "Python") },
           { role: "user", content: user },
         ],
       }),
