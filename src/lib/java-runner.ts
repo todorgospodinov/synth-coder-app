@@ -6,7 +6,7 @@ import toolsJar from "@/assets/tools.jar.asset.json";
 import type { RunResult } from "./python-runner";
 
 const LOADER = "https://cjrtnc.leaningtech.com/4.3/loader.js";
-const CP = "/str/tools.jar:/files/ctr/";
+const CP = "/str/tools.jar:/files/";
 
 declare global {
   interface Window {
@@ -21,6 +21,11 @@ const RUNNER = `import java.io.*; import java.net.*; import java.lang.reflect.*;
 public class CTRunner {
   public static void main(String[] a) throws Exception {
     String dir = a[0];
+    new File(dir).mkdirs();
+    PrintWriter cerr = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dir + "cerr.txt"), "UTF-8"));
+    int rc = com.sun.tools.javac.Main.compile(new String[]{ a[3], "-d", dir }, cerr);
+    cerr.close();
+    if (rc != 0) return;
     PrintStream out = new PrintStream(new FileOutputStream(dir + "out.txt"), true, "UTF-8");
     PrintStream err = new PrintStream(new FileOutputStream(dir + "err.txt"), true, "UTF-8");
     PrintStream oo = System.out, oe = System.err; InputStream oi = System.in;
@@ -76,7 +81,7 @@ function getJava(): Promise<void> {
       const jar = new Uint8Array(await (await fetch(toolsJar.url)).arrayBuffer());
       window.cheerpjAddStringFile!("/str/tools.jar", jar);
       window.cheerpjAddStringFile!("/str/CTRunner.java", RUNNER);
-      const code = await window.cheerpjRunMain!("com.sun.tools.javac.Main", CP, "/str/CTRunner.java", "-d", "/files/ctr/");
+      const code = await window.cheerpjRunMain!("com.sun.tools.javac.Main", CP, "/str/CTRunner.java", "-d", "/files/");
       if (code !== 0) throw new Error("Could not prepare the Java compiler.");
     })().catch((e) => {
       ready = null;
@@ -96,14 +101,11 @@ export async function runJava(code: string, stdin: string): Promise<RunResult> {
   const dir = `/files/r${id}/`;
   window.cheerpjAddStringFile!(src, code);
   window.cheerpjAddStringFile!(`/str/in${id}.txt`, stdin);
-  const con = consoleEl();
-  con.textContent = "";
-  const compiled = await window.cheerpjRunMain!("com.sun.tools.javac.Main", CP, src, "-d", dir);
-  if (compiled !== 0) {
-    const msg = (con.textContent ?? "").split(`/str/r${id}/`).join("");
-    return { stdout: "", stderr: msg || "Compilation failed.", ok: false, ms: Math.round(performance.now() - start) };
+  await window.cheerpjRunMain!("CTRunner", CP, dir, cls, `/str/in${id}.txt`, src);
+  const cerr = (await readFile(dir + "cerr.txt")).split(`/str/r${id}/`).join("").trim();
+  if (cerr && !(await readFile(dir + "out.txt")) && /error/.test(cerr)) {
+    return { stdout: "", stderr: cerr, ok: false, ms: Math.round(performance.now() - start) };
   }
-  await window.cheerpjRunMain!("CTRunner", CP, dir, cls, `/str/in${id}.txt`);
   const stdout = await readFile(dir + "out.txt");
   const stderr = (await readFile(dir + "err.txt"))
     .split("\n")
