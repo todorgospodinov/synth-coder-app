@@ -12,7 +12,7 @@ declare global {
   interface Window {
     cheerpjInit?: (o?: object) => Promise<void>;
     cheerpjRunMain?: (cls: string, cp: string, ...args: string[]) => Promise<number>;
-    cheerpjAddStringFile?: (path: string, data: string | Uint8Array) => void;
+    cheerpOSAddStringFile?: (path: string, data: string | Uint8Array) => void;
     cjFileBlob?: (path: string) => Promise<Blob>;
   }
 }
@@ -22,8 +22,12 @@ public class CTRunner {
   public static void main(String[] a) throws Exception {
     String dir = a[0];
     new File(dir).mkdirs();
+    String srcPath = dir + a[1] + ".java";
+    try (InputStream si = new FileInputStream(a[3]); OutputStream so = new FileOutputStream(srcPath)) {
+      byte[] buf = new byte[8192]; int n; while ((n = si.read(buf)) > 0) so.write(buf, 0, n);
+    }
     PrintWriter cerr = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dir + "cerr.txt"), "UTF-8"));
-    int rc = com.sun.tools.javac.Main.compile(new String[]{ a[3], "-d", dir }, cerr);
+    int rc = com.sun.tools.javac.Main.compile(new String[]{ srcPath, "-d", dir }, cerr);
     cerr.close();
     if (rc != 0) return;
     PrintStream out = new PrintStream(new FileOutputStream(dir + "out.txt"), true, "UTF-8");
@@ -79,8 +83,8 @@ function getJava(): Promise<void> {
       if (!window.cheerpjInit) await loadScript(LOADER);
       await window.cheerpjInit!({ status: "none" });
       const jar = new Uint8Array(await (await fetch(toolsJar.url)).arrayBuffer());
-      window.cheerpjAddStringFile!("/str/tools.jar", jar);
-      window.cheerpjAddStringFile!("/str/CTRunner.java", RUNNER);
+      window.cheerpOSAddStringFile!("/str/tools.jar", jar);
+      window.cheerpOSAddStringFile!("/str/CTRunner.java", RUNNER);
       const code = await window.cheerpjRunMain!("com.sun.tools.javac.Main", CP, "/str/CTRunner.java", "-d", "/files/");
       if (code !== 0) throw new Error("Could not prepare the Java compiler.");
     })().catch((e) => {
@@ -97,12 +101,12 @@ export async function runJava(code: string, stdin: string): Promise<RunResult> {
   const start = performance.now();
   const id = ++runId + "_" + Date.now();
   const cls = code.match(/public\s+(?:final\s+)?class\s+(\w+)/)?.[1] ?? "Main";
-  const src = `/str/r${id}/${cls}.java`;
+  const src = `/str/src${id}.txt`;
   const dir = `/files/r${id}/`;
-  window.cheerpjAddStringFile!(src, code);
-  window.cheerpjAddStringFile!(`/str/in${id}.txt`, stdin);
+  window.cheerpOSAddStringFile!(src, code);
+  window.cheerpOSAddStringFile!(`/str/in${id}.txt`, stdin);
   await window.cheerpjRunMain!("CTRunner", CP, dir, cls, `/str/in${id}.txt`, src);
-  const cerr = (await readFile(dir + "cerr.txt")).split(`/str/r${id}/`).join("").trim();
+  const cerr = (await readFile(dir + "cerr.txt")).split(dir).join("").trim();
   if (cerr && !(await readFile(dir + "out.txt")) && /error/.test(cerr)) {
     return { stdout: "", stderr: cerr, ok: false, ms: Math.round(performance.now() - start) };
   }
