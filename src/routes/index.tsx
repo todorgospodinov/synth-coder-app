@@ -16,15 +16,15 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "CodeTrainer — Python tasks with AI assistance" },
+      { title: "CodeTrainer — Python & Java tasks with AI assistance" },
       {
         name: "description",
-        content: "Browse and search Python programming tasks, solve them online and get AI feedback on your solutions.",
+        content: "Browse and search Python and Java programming tasks, solve them online and get AI feedback on your solutions.",
       },
-      { property: "og:title", content: "CodeTrainer — Python tasks with AI assistance" },
+      { property: "og:title", content: "CodeTrainer — Python & Java tasks with AI assistance" },
       {
         property: "og:description",
-        content: "Browse and search Python programming tasks, solve them online and get AI feedback on your solutions.",
+        content: "Browse and search Python and Java programming tasks, solve them online and get AI feedback on your solutions.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
