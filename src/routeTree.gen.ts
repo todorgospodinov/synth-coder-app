@@ -13,14 +13,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as JavaRouteImport } from './routes/java'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PythonRouteImport } from './routes/python'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as SqlRouteImport } from './routes/sql'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAddTaskRouteImport } from './routes/_authenticated/add-task'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated/my-tasks'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as TasksTaskIdRouteImport } from './routes/tasks.$taskId'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminTasksRouteImport } from './routes/_authenticated/admin_.tasks'
 import { Route as AuthenticatedEditTaskTaskIdRouteImport } from './routes/_authenticated/edit-task.$taskId'
 
@@ -43,6 +46,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PythonRoute = PythonRouteImport.update({
   id: '/python',
   path: '/python',
@@ -58,6 +66,12 @@ const SqlRoute = SqlRouteImport.update({
   path: '/sql',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAddTaskRoute = AuthenticatedAddTaskRouteImport.update({
   id: '/add-task',
   path: '/add-task',
@@ -83,6 +97,11 @@ const TasksTaskIdRoute = TasksTaskIdRouteImport.update({
   path: '/tasks/$taskId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminTasksRoute = AuthenticatedAdminTasksRouteImport.update({
   id: '/admin_/tasks',
   path: '/admin/tasks',
@@ -99,14 +118,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/java': typeof JavaRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
   '/sql': typeof SqlRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/tasks': typeof AuthenticatedAdminTasksRoute
   '/edit-task/$taskId': typeof AuthenticatedEditTaskTaskIdRoute
 }
@@ -114,14 +136,17 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/java': typeof JavaRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
   '/sql': typeof SqlRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/tasks': typeof AuthenticatedAdminTasksRoute
   '/edit-task/$taskId': typeof AuthenticatedEditTaskTaskIdRoute
 }
@@ -131,14 +156,17 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/java': typeof JavaRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
   '/sql': typeof SqlRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/add-task': typeof AuthenticatedAddTaskRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/my-tasks': typeof AuthenticatedMyTasksRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/tasks/$taskId': typeof TasksTaskIdRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin_/tasks': typeof AuthenticatedAdminTasksRoute
   '/_authenticated/edit-task/$taskId': typeof AuthenticatedEditTaskTaskIdRoute
 }
@@ -148,14 +176,17 @@ export interface FileRouteTypes {
     | '/'
     | '/java'
     | '/login'
+    | '/mcp'
     | '/python'
     | '/register'
     | '/sql'
+    | '/.well-known/oauth-protected-resource'
     | '/add-task'
     | '/admin'
     | '/my-tasks'
     | '/profile'
     | '/tasks/$taskId'
+    | '/.lovable/oauth/consent'
     | '/admin/tasks'
     | '/edit-task/$taskId'
   fileRoutesByTo: FileRoutesByTo
@@ -163,14 +194,17 @@ export interface FileRouteTypes {
     | '/'
     | '/java'
     | '/login'
+    | '/mcp'
     | '/python'
     | '/register'
     | '/sql'
+    | '/.well-known/oauth-protected-resource'
     | '/add-task'
     | '/admin'
     | '/my-tasks'
     | '/profile'
     | '/tasks/$taskId'
+    | '/.lovable/oauth/consent'
     | '/admin/tasks'
     | '/edit-task/$taskId'
   id:
@@ -179,14 +213,17 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/java'
     | '/login'
+    | '/mcp'
     | '/python'
     | '/register'
     | '/sql'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/add-task'
     | '/_authenticated/admin'
     | '/_authenticated/my-tasks'
     | '/_authenticated/profile'
     | '/tasks/$taskId'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/admin_/tasks'
     | '/_authenticated/edit-task/$taskId'
   fileRoutesById: FileRoutesById
@@ -196,10 +233,13 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   JavaRoute: typeof JavaRoute
   LoginRoute: typeof LoginRoute
+  McpRoute: typeof McpRoute
   PythonRoute: typeof PythonRoute
   RegisterRoute: typeof RegisterRoute
   SqlRoute: typeof SqlRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   TasksTaskIdRoute: typeof TasksTaskIdRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +272,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/python': {
       id: '/python'
       path: '/python'
@@ -251,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/sql'
       fullPath: '/sql'
       preLoaderRoute: typeof SqlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/add-task': {
@@ -286,6 +340,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks/$taskId'
       fullPath: '/tasks/$taskId'
       preLoaderRoute: typeof TasksTaskIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin_/tasks': {
@@ -331,10 +392,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   JavaRoute: JavaRoute,
   LoginRoute: LoginRoute,
+  McpRoute: McpRoute,
   PythonRoute: PythonRoute,
   RegisterRoute: RegisterRoute,
   SqlRoute: SqlRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   TasksTaskIdRoute: TasksTaskIdRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
