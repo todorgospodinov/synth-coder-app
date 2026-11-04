@@ -1,3 +1,4 @@
+import { LANGUAGES, type Language } from "@/lib/languages";
 import { useRef, type KeyboardEvent } from "react";
 
 /** Lightweight code editor: line numbers, Tab = 4 spaces, Ctrl/Cmd+Enter runs. */
@@ -7,7 +8,7 @@ export function CodeEditor({
   onRun,
   language = "python",
 }: {
-  language?: "python" | "java";
+  language?: Language;
   value: string;
   onChange: (v: string) => void;
   onRun: () => void;
@@ -40,8 +41,8 @@ export function CodeEditor({
       </div>
       <textarea
         ref={ref}
-        aria-label={`${language === "java" ? "Java" : "Python"} code`}
-        placeholder={`Write your ${language === "java" ? "Java" : "Python"} code here…`}
+        aria-label={`${LANGUAGES[language].label} code`}
+        placeholder={`Write your ${LANGUAGES[language].label} code here…`}
         spellCheck={false}
         value={value}
         onChange={(e) => onChange(e.target.value)}

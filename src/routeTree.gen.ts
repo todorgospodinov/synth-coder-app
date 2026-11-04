@@ -15,6 +15,7 @@ import { Route as JavaRouteImport } from './routes/java'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PythonRouteImport } from './routes/python'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as SqlRouteImport } from './routes/sql'
 import { Route as AuthenticatedAddTaskRouteImport } from './routes/_authenticated/add-task'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated/my-tasks'
@@ -50,6 +51,11 @@ const PythonRoute = PythonRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SqlRoute = SqlRouteImport.update({
+  id: '/sql',
+  path: '/sql',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAddTaskRoute = AuthenticatedAddTaskRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
+  '/sql': typeof SqlRoute
   '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/my-tasks': typeof AuthenticatedMyTasksRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
+  '/sql': typeof SqlRoute
   '/add-task': typeof AuthenticatedAddTaskRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/my-tasks': typeof AuthenticatedMyTasksRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/python': typeof PythonRoute
   '/register': typeof RegisterRoute
+  '/sql': typeof SqlRoute
   '/_authenticated/add-task': typeof AuthenticatedAddTaskRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/my-tasks': typeof AuthenticatedMyTasksRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/python'
     | '/register'
+    | '/sql'
     | '/add-task'
     | '/admin'
     | '/my-tasks'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/python'
     | '/register'
+    | '/sql'
     | '/add-task'
     | '/admin'
     | '/my-tasks'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/python'
     | '/register'
+    | '/sql'
     | '/_authenticated/add-task'
     | '/_authenticated/admin'
     | '/_authenticated/my-tasks'
@@ -186,6 +198,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PythonRoute: typeof PythonRoute
   RegisterRoute: typeof RegisterRoute
+  SqlRoute: typeof SqlRoute
   TasksTaskIdRoute: typeof TasksTaskIdRoute
 }
 
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sql': {
+      id: '/sql'
+      path: '/sql'
+      fullPath: '/sql'
+      preLoaderRoute: typeof SqlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/add-task': {
@@ -313,6 +333,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PythonRoute: PythonRoute,
   RegisterRoute: RegisterRoute,
+  SqlRoute: SqlRoute,
   TasksTaskIdRoute: TasksTaskIdRoute,
 }
 export const routeTree = rootRouteImport

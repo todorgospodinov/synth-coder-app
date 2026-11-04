@@ -38,7 +38,7 @@ export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CO
   async function run(): Promise<RunResult | null> {
     setRunning(true);
     try {
-      const r = language === "java" ? await (await import("@/lib/java-runner")).runJava(code, stdin) : await runPython(code, stdin);
+      const r = language === "java" ? await (await import("@/lib/java-runner")).runJava(code, stdin) : language === "sql" ? await (await import("@/lib/sql-runner")).runSql(code) : await runPython(code, stdin);
       setResult(r);
       return r;
     } catch (e) {

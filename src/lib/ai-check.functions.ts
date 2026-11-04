@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const Input = z.object({
-  language: z.enum(["python", "java"]).default("python"),
+  language: z.enum(["python", "java", "sql"]).default("python"),
   task: z.string().max(8000),
   code: z.string().min(1).max(20000),
   stdin: z.string().max(4000),
@@ -43,7 +43,7 @@ export const checkSolution = createServerFn({ method: "POST" })
         stream: true,
         response_format: { type: "json_object" },
         messages: [
-          { role: "system", content: SYSTEM(data.language === "java" ? "Java" : "Python") },
+          { role: "system", content: SYSTEM(data.language === "java" ? "Java" : data.language === "sql" ? "SQL (SQLite)" : "Python") },
           { role: "user", content: user },
         ],
       }),

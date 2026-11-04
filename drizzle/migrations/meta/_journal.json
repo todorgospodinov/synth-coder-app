@@ -36,6 +36,13 @@
       "when": 1792143396097,
       "tag": "0004_task_language",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793794687787,
+      "tag": "0005_task_language_sql",
+      "breakpoints": true
     }
   ]
 }

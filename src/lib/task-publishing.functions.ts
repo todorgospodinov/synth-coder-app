@@ -15,7 +15,7 @@ export const submitTask = createServerFn({ method: "POST" })
       title: z.string().trim().min(3).max(150),
       statement: z.string().trim().min(10).max(8000),
       code: z.string().max(20000),
-  language: z.enum(["python", "java"]).default("python"),
+  language: z.enum(["python", "java", "sql"]).default("python"),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -78,7 +78,7 @@ const taskInput = z.object({
   title: z.string().trim().min(3).max(150),
   statement: z.string().trim().min(10).max(8000),
   code: z.string().max(20000),
-  language: z.enum(["python", "java"]).default("python"),
+  language: z.enum(["python", "java", "sql"]).default("python"),
 });
 
 /** One of the caller's own tasks (any state), for editing. Admins may load any task. */
