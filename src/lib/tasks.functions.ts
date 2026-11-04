@@ -24,7 +24,7 @@ function publicClient() {
 
 /** Lists published tasks, newest first; optional keyword search in title/statement. */
 export const listTasks = createServerFn({ method: "GET" })
-  .validator((d: unknown) => z.object({ q: z.string().max(100), limit: z.number().int().min(1).max(100), language: z.enum(["python", "java"]).optional() }).parse(d))
+  .validator((d: unknown) => z.object({ q: z.string().max(100), limit: z.number().int().min(1).max(100), language: z.enum(["python", "java", "sql"]).optional() }).parse(d))
   .handler(async ({ data }): Promise<TaskSummary[]> => {
     let query = publicClient()
       .from("tasks")

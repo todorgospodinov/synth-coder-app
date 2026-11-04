@@ -12,7 +12,7 @@ export function TaskCard({ task }: { task: TaskSummary }) {
     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-semibold tracking-tight group-hover:text-accent">{task.title}</h3>
-        <span className={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[11px] ${lang === "java" ? "border-violet text-violet" : "border-accent text-accent"}`}>
+        <span className={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[11px] ${lang === "java" ? "border-violet text-violet" : lang === "sql" ? "border-primary text-primary" : "border-accent text-accent"}`}>
           {LANGUAGES[lang].label}
         </span>
       </div>

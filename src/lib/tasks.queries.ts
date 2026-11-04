@@ -10,11 +10,13 @@ export const tasksQuery = (q: string, all: boolean, language?: Language) =>
     queryFn: async () => {
       if (q || all || language) return listTasks({ data: { q, limit: q || all ? 100 : RECENT_LIMIT, language } });
       // Home: recent tasks of both languages, interleaved.
-      const [py, java] = await Promise.all([
-        listTasks({ data: { q, limit: RECENT_LIMIT, language: "python" } }),
-        listTasks({ data: { q, limit: RECENT_LIMIT, language: "java" } }),
-      ]);
-      return py.flatMap((t, i) => (java[i] ? [t, java[i]] : [t])).concat(java.slice(py.length));
+      const lists = await Promise.all(
+        (["python", "java", "sql"] as const).map((language) => listTasks({ data: { q, limit: RECENT_LIMIT, language } })),
+      );
+      // Interleave: newest of each language first.
+      const out = [];
+      for (let i = 0; i < RECENT_LIMIT; i++) for (const l of lists) if (l[i]) out.push(l[i]);
+      return out;
     },
   });
 

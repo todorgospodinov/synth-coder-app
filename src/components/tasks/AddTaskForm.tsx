@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { asLanguage, type Language } from "@/lib/languages";
 import { submitTask, updateMyTask } from "@/lib/task-publishing.functions";
 
 const field = "w-full rounded-lg border border-border bg-background/40 px-3 py-2 text-sm outline-none focus:border-primary";
@@ -18,7 +19,7 @@ export function AddTaskForm({ initial }: { initial?: Initial }) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [statement, setStatement] = useState(initial?.statement ?? "");
   const [code, setCode] = useState(initial?.code ?? "");
-  const [language, setLanguage] = useState<"python" | "java">(initial?.language === "java" ? "java" : "python");
+  const [language, setLanguage] = useState<Language>(asLanguage(initial?.language));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -45,9 +46,10 @@ export function AddTaskForm({ initial }: { initial?: Initial }) {
     <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-glass backdrop-blur-xl">
       <label className="block space-y-1.5">
         <span className="text-sm text-muted-foreground">Language</span>
-        <select className={field} value={language} onChange={(e) => setLanguage(e.target.value === "java" ? "java" : "python")}>
+        <select className={field} value={language} onChange={(e) => setLanguage(asLanguage(e.target.value))}>
           <option value="python">Python</option>
           <option value="java">Java</option>
+          <option value="sql">SQL</option>
         </select>
       </label>
       <label className="block space-y-1.5">

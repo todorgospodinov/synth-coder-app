@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { HeaderAuth } from "./HeaderAuth";
 
-type NavItem = { label: string; to?: "/" | "/python" | "/java" };
+type NavItem = { label: string; to?: "/" | "/python" | "/java" | "/sql" };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Home", to: "/" },
   { label: "Python", to: "/python" },
   { label: "Java", to: "/java" },
+  { label: "SQL", to: "/sql" },
   { label: "AI Assist" },
   { label: "Pricing" },
 ];
