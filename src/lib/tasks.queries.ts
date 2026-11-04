@@ -14,8 +14,8 @@ export const tasksQuery = (q: string, all: boolean, language?: Language) =>
         (["python", "java", "sql"] as const).map((language) => listTasks({ data: { q, limit: RECENT_LIMIT, language } })),
       );
       // Interleave: newest of each language first.
-      const out = [];
-      for (let i = 0; i < RECENT_LIMIT; i++) for (const l of lists) if (l[i]) out.push(l[i]);
+      const out: Awaited<ReturnType<typeof listTasks>> = [];
+      for (let i = 0; i < RECENT_LIMIT; i++) for (const l of lists) { const t = l[i]; if (t) out.push(t); }
       return out;
     },
   });
