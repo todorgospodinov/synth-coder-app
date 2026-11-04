@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "sdk_version": "3.4.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://hlybryyfszzydsbilwlr.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "code-trainer-studio",
+      "version": "0.1.0",
+      "title": "Code Trainer Studio"
+    },
+    "tools": [
+      {
+        "name": "search_tasks",
+        "title": "Search published tasks",
+        "description": "List published programming tasks, newest first, optionally filtered by keyword and language.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "maxLength": 100,
+              "description": "Keyword to match in title or statement."
+            },
+            "language": {
+              "type": "string",
+              "enum": [
+                "python",
+                "java",
+                "sql"
+              ],
+              "description": "Only tasks for this language."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Max results (default 10)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_task",
+        "title": "Get task details",
+        "description": "Get the full statement and starter code of a task you can see (published or your own).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Task id from search_tasks or list_my_tasks."
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_tasks",
+        "title": "List my tasks",
+        "description": "List tasks you authored, with their review status.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "submit_task",
+        "title": "Submit a task for review",
+        "description": "Submit a new programming task; it goes to admins for review before publishing.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 150,
+              "description": "Task title."
+            },
+            "statement": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 8000,
+              "description": "Problem statement."
+            },
+            "code": {
+              "type": "string",
+              "maxLength": 20000,
+              "description": "Optional starter code."
+            },
+            "language": {
+              "type": "string",
+              "enum": [
+                "python",
+                "java",
+                "sql"
+              ],
+              "description": "Language (default python)."
+            }
+          },
+          "required": [
+            "title",
+            "statement"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
