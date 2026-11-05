@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthCard, FormError } from "@/components/auth/AuthCard";
 import { Button } from "@/components/ui/button";
 
-type OAuthResult = { data: Record<string, any> | null; error: { message: string } | null };
+type OAuthResult = { data: any; error: { message: string } | null };
 type OAuthApi = {
   getAuthorizationDetails(id: string): Promise<OAuthResult>;
   approveAuthorization(id: string): Promise<OAuthResult>;
