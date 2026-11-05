@@ -7,6 +7,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { runPython, type RunResult } from "@/lib/python-runner";
 import { LANGUAGES, type Language } from "@/lib/languages";
 import { checkSolution, type AiReview } from "@/lib/ai-check.functions";
+import { useWebMCP } from "use-webmcp-tool";
+import { runWebMCPTool } from "@/lib/webmcp-telemetry";
 import { CodeEditor } from "./CodeEditor";
 import { OutputConsole } from "./OutputConsole";
 import { AiReviewPanel } from "./AiReviewPanel";
@@ -64,6 +66,16 @@ export function Workspace({ initialTask = STARTER_TASK, initialCode = STARTER_CO
       setReviewing(false);
     }
   }
+
+  useWebMCP({
+    name: "get_workspace",
+    description: "Read the task, code and latest run output currently shown in the code workspace.",
+    annotations: { readOnlyHint: true, untrustedContentHint: true },
+    execute: () =>
+      runWebMCPTool("get_workspace", () =>
+        `Language: ${language}\nTask:\n${task || "(empty)"}\n\nCode:\n${code || "(empty)"}\n\nOutput:\n${result ? result.stdout + (result.stderr ? "\n[stderr]\n" + result.stderr : "") : "(not run)"}`,
+      ),
+  });
 
   return (
     <section className="mx-auto w-[min(1280px,94%)] py-8">
