@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { oauthReturnPath } from "@/lib/oauth-return-path";
 import { AuthCard, FormError } from "@/components/auth/AuthCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,11 +18,14 @@ export const Route = createFileRoute("/register")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({ next: typeof s["next"] === "string" ? s["next"] : undefined }),
   component: RegisterPage,
 });
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+  const back = oauthReturnPath(next);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,13 +42,13 @@ function RegisterPage() {
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: new URL(back, window.location.origin).href,
         data: { full_name: fullName.trim() },
       },
     });
     setBusy(false);
     if (error) return setError(error.message);
-    if (data.session) navigate({ to: "/" });
+    if (data.session) { if (back !== "/") window.location.href = back; else navigate({ to: "/" }); }
     else setSent(true);
   }
 
@@ -68,7 +72,7 @@ function RegisterPage() {
         footer={
           <>
             Already registered?{" "}
-            <Link to="/login" className="text-foreground underline-offset-4 hover:underline">
+            <Link to="/login" search={{ next }} className="text-foreground underline-offset-4 hover:underline">
               Sign in
             </Link>
           </>
