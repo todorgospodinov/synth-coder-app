@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { isAdmin } from "@/hooks/use-auth";
+import { oauthReturnPath } from "@/lib/oauth-return-path";
 import { AuthCard, FormError } from "@/components/auth/AuthCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,11 +19,13 @@ export const Route = createFileRoute("/login")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { next?: string | undefined } => ({ next: typeof s["next"] === "string" ? s["next"] : undefined }),
   component: LoginPage,
 });
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +38,8 @@ function LoginPage() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) return setError(error.message);
+    const back = oauthReturnPath(next);
+    if (next && back !== "/") return void (window.location.href = back);
     navigate({ to: isAdmin(data.user) ? "/admin" : "/" });
   }
 
@@ -46,7 +51,7 @@ function LoginPage() {
         footer={
           <>
             No account yet?{" "}
-            <Link to="/register" className="text-foreground underline-offset-4 hover:underline">
+            <Link to="/register" search={{ next }} className="text-foreground underline-offset-4 hover:underline">
               Create one
             </Link>
           </>
